@@ -10,13 +10,10 @@ interface gpioHubProxy {
 
 interface gpioHubClient {
     notifyPinEdge(device: string, pinNumber: number, edge: number);
-   
-    //raggruppamentoOrdiniModificato: (raggruppamentoOrdiniId: string, ordiniRimossi: string[], ordiniAggiunti: string[]) => void;
-    //ordiniModificati: (ordineId: string[], correlationId: string) => void;
 }
 
 interface gpioHubServer {
-    //joinAccount(accountId: number): JQueryPromise<void>;
+
     configureOutputPin(device: string, pinNumber: number);
     configureInputPin(device: string, pinNumber: number);
     resetDevice(device: string);
@@ -31,24 +28,24 @@ module Pi2.Remote.Web.Pi {
         gpioHub: gpioHubProxy;
         device: string;
         events: KnockoutObservableArray<GpioEvent>;
-        eventsPulsanteA: KnockoutObservableArray<GpioEvent>;
-        eventsPulsanteB: KnockoutObservableArray<GpioEvent>;
-        pulsanteA: number;
-        pulsanteB: number;
-        ledRosso: number;
-        ledGiallo: number;
+        eventsButtonA: KnockoutObservableArray<GpioEvent>;
+        eventsButtonB: KnockoutObservableArray<GpioEvent>;
+        buttonA: number;
+        buttonB: number;
+        redLed: number;
+        yellowLed: number;
 
         constructor() {
             this.device = "Pi";
            
-            this.pulsanteA = 6;
-            this.pulsanteB = 13;
-            this.ledRosso = 18;
-            this.ledGiallo = 16;
+            this.buttonA = 6;
+            this.buttonB = 13;
+            this.redLed = 18;
+            this.yellowLed = 16;
 
             this.events = ko.observableArray<GpioEvent>();
-            this.eventsPulsanteA = ko.observableArray<GpioEvent>();
-            this.eventsPulsanteB = ko.observableArray<GpioEvent>();
+            this.eventsButtonA = ko.observableArray<GpioEvent>();
+            this.eventsButtonB = ko.observableArray<GpioEvent>();
 
             $(() => {
 
@@ -64,20 +61,20 @@ module Pi2.Remote.Web.Pi {
                 this.gpioHub.client.notifyPinEdge = (device, pinNumber, edge) => {
                     var msg = device + " : " + pinNumber + " ";
                     if (edge === 1)
-                        msg = msg + "salita";
+                        msg = msg + "pressed";
                     else
-                        msg = msg + "discesa";
+                        msg = msg + "released";
 
                     console.log(msg);
                     this.events.push(new GpioEvent(msg));
 
-                    if (pinNumber === this.pulsanteA) {
-                        this.gpioHub.server.writeOutputPinValue(device, this.ledRosso, (edge + 1) % 2);
-                        this.eventsPulsanteA.push(new GpioEvent(msg));
+                    if (pinNumber === this.buttonA) {
+                        this.gpioHub.server.writeOutputPinValue(device, this.redLed, (edge + 1) % 2);
+                        this.eventsButtonA.push(new GpioEvent(msg));
                     }
-                    if (pinNumber === this.pulsanteB) {
-                        this.gpioHub.server.writeOutputPinValue(device, this.ledGiallo, edge);
-                        this.eventsPulsanteB.push(new GpioEvent(msg));
+                    if (pinNumber === this.buttonB) {
+                        this.gpioHub.server.writeOutputPinValue(device, this.yellowLed, edge);
+                        this.eventsButtonB.push(new GpioEvent(msg));
                     }
                 }
 
@@ -89,32 +86,34 @@ module Pi2.Remote.Web.Pi {
 
         }
 
-        public turnLedRossoOn() {
-            this.gpioHub.server.writeOutputPinValue(this.device, this.ledRosso, 1);
+        public turnLedRedOn() {
+            this.gpioHub.server.writeOutputPinValue(this.device, this.redLed, 1);
         }
 
-        public turnLedRossoOff() {
-            this.gpioHub.server.writeOutputPinValue(this.device, this.ledRosso, 0);
+        public turnLedRedOff() {
+            this.gpioHub.server.writeOutputPinValue(this.device, this.redLed, 0);
         }
 
-        public turnLedGialloOn() {
-            this.gpioHub.server.writeOutputPinValue(this.device, this.ledGiallo, 1);
+        public turnLedYellowOn() {
+            this.gpioHub.server.writeOutputPinValue(this.device, this.yellowLed, 1);
         }
 
-        public turnLedGialloOff() {
-            this.gpioHub.server.writeOutputPinValue(this.device, this.ledGiallo, 0);
+        public turnLedYellowOff() {
+            this.gpioHub.server.writeOutputPinValue(this.device, this.yellowLed, 0);
         }
 
         public configure() {
-            this.gpioHub.server.configureOutputPin(this.device, this.ledRosso);
-            this.gpioHub.server.configureOutputPin(this.device, this.ledGiallo);
-            this.gpioHub.server.configureInputPin(this.device, this.pulsanteA);
-            this.gpioHub.server.configureInputPin(this.device, this.pulsanteB);
+            this.gpioHub.server.configureOutputPin(this.device, this.redLed);
+            this.gpioHub.server.configureOutputPin(this.device, this.yellowLed);
+            this.gpioHub.server.configureInputPin(this.device, this.buttonA);
+            this.gpioHub.server.configureInputPin(this.device, this.buttonB);
         }
 
         public reset() {
             this.gpioHub.server.resetDevice(this.device);
             this.events.removeAll();
+            this.eventsButtonA.removeAll();
+            this.eventsButtonB.removeAll();
         }
     }
 
@@ -126,7 +125,7 @@ module Pi2.Remote.Web.Pi {
         constructor(desc: string) {
             var date = new Date();
             this.timestamp = date;
-            this.time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+            this.time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "," + date.getMilliseconds();
             this.description = desc;
         }
     }

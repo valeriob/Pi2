@@ -7,11 +7,11 @@
 <div>
     <button data-bind="click:configure">Configure</button>
     <button data-bind="click:reset">Reset</button>
-    <button data-bind="click:turnLedRossoOn">Rosso On</button>
-    <button data-bind="click:turnLedRossoOff">Rosso Off</button>
+    <button data-bind="click:turnLedRedOn">Red On</button>
+    <button data-bind="click:turnLedRedOff">Red Off</button>
 
-    <button data-bind="click:turnLedGialloOn">Giallo On</button>
-    <button data-bind="click:turnLedGialloOff">Giallo Off</button>
+    <button data-bind="click:turnLedYellowOn">Yellow On</button>
+    <button data-bind="click:turnLedYellowOff">Yellow Off</button>
 
     @*<div data-bind="foreach:events">
             <span style="font-weight:bold" data-bind="text:time"> </span>
@@ -19,13 +19,13 @@
         </div>*@
 
     <div class="row">
-        <div class="col-lg-3" data-bind="foreach:eventsPulsanteA">
+        <div class="col-lg-3" data-bind="foreach:eventsButtonA">
             <div>
                 <span style="font-weight:bold" data-bind="text:time"> </span>
                 <span data-bind="text:description"> </span>
             </div>
         </div>
-        <div class="col-lg-3" data-bind="foreach:eventsPulsanteB">
+        <div class="col-lg-3" data-bind="foreach:eventsButtonB">
             <div>
                 <span style="font-weight:bold" data-bind="text:time"> </span>
                 <span data-bind="text:description"> </span>
