@@ -10,7 +10,7 @@ namespace Pi2.Remote.Web.Hubs
 {
 
 
-    class GpioHub : Hub<IGpioHub>
+    public class GpioHub : Hub<IGpioHub>
     {
         public async Task RegisterDevice(string device)
         {
