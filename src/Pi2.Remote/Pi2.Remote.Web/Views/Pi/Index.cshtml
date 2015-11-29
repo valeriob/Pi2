@@ -6,6 +6,13 @@
 
 <div>
     <button data-bind="click:configure">Configure</button>
+    <button data-bind="click:turnLedOn">On</button>
+    <button data-bind="click:turnLedOff">Off</button>
+
+    <div data-bind="foreach:events">
+        <span style="font-weight:bold" data-bind="text:time"> </span>
+        <span data-bind="text:description"> </span>
+    </div>
 </div>
 
 @section scripts{
