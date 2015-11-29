@@ -17,6 +17,11 @@ namespace Pi2.Remote.Web.Hubs
             await Groups.Add(Context.ConnectionId, device);
         }
 
+        public async Task ResetDevice(string device)
+        {
+            await Clients.Group(device).ResetDevice();
+        }
+
 
         public async Task ConfigureOutputPin(string device, int pinNumber)
         {

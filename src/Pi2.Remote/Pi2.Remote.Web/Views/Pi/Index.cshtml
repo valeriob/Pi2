@@ -6,20 +6,40 @@
 
 <div>
     <button data-bind="click:configure">Configure</button>
-    <button data-bind="click:turnLedOn">On</button>
-    <button data-bind="click:turnLedOff">Off</button>
+    <button data-bind="click:reset">Reset</button>
+    <button data-bind="click:turnLedRossoOn">Rosso On</button>
+    <button data-bind="click:turnLedRossoOff">Rosso Off</button>
 
-    <div data-bind="foreach:events">
-        <span style="font-weight:bold" data-bind="text:time"> </span>
-        <span data-bind="text:description"> </span>
+    <button data-bind="click:turnLedGialloOn">Giallo On</button>
+    <button data-bind="click:turnLedGialloOff">Giallo Off</button>
+
+    @*<div data-bind="foreach:events">
+            <span style="font-weight:bold" data-bind="text:time"> </span>
+            <span data-bind="text:description"> </span>
+        </div>*@
+
+    <div class="row">
+        <div class="col-lg-3" data-bind="foreach:eventsPulsanteA">
+            <div>
+                <span style="font-weight:bold" data-bind="text:time"> </span>
+                <span data-bind="text:description"> </span>
+            </div>
+        </div>
+        <div class="col-lg-3" data-bind="foreach:eventsPulsanteB">
+            <div>
+                <span style="font-weight:bold" data-bind="text:time"> </span>
+                <span data-bind="text:description"> </span>
+            </div>
+        </div>
     </div>
+
 </div>
 
 @section scripts{
     <script src="@Url.Content("~/scripts/jquery-2.1.4.js")"></script>
     <script src="@Url.Content("~/scripts/jquery.signalR-2.2.0.js")"></script>
     <script src="@Url.Content("~/signalr/hubs")"></script>
-    
+
     <script src="@Url.Content("~/scripts/knockout-3.4.0.js")"></script>
 
     <script src="@Url.Content("~/Views/Pi/Index.js")"></script>

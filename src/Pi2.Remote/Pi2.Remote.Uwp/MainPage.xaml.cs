@@ -70,6 +70,11 @@ namespace Pi2.Remote.Uwp
             });
 
 
+            proxy.On("ResetDevice", () =>
+            {
+                _setup.Reset();
+            });
+
 
             await _hubConnection.Start();
 

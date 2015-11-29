@@ -49,6 +49,16 @@ namespace Pi.Remote
             throw new Exception("pin not configured");
         }
 
+        public void Reset()
+        {
+            foreach (var control in _controls)
+            {
+                control.Dispose();
+            }
+
+            _controls.Clear();
+        }
+
 
         public void Dispose()
         {
@@ -57,6 +67,7 @@ namespace Pi.Remote
                 control.Dispose();
             }
         }
+
     }
 
 }

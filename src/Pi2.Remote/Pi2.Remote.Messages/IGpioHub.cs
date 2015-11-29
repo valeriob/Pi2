@@ -18,8 +18,7 @@ namespace Pi2.Remote.Messages
         Task NotifyPinEdge(string device, int pinNumber, GpioPinEdge edge);
 
         Task NotifyPinValue(string device, int pinNumber, GpioPinValue value);
-
-        
+        Task ResetDevice();
     }
 
     //
