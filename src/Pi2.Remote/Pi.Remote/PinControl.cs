@@ -54,7 +54,7 @@ namespace Pi.Remote
         {
             pin = _gpio.OpenPin(pinNumber);
 
-
+            pin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             pin.ValueChanged += (sender, args) =>
             {
                 callBack(args.Edge);

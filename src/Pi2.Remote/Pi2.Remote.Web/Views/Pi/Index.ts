@@ -48,7 +48,12 @@ module Pi2.Remote.Web.Pi {
                 });
 
                 this.gpioHub.client.notifyPinEdge = (device, pinNumber, edge) => {
-                    var msg = device + " : " + pinNumber + " " + edge;
+                    var msg = device + " : " + pinNumber + " ";
+                    if (edge === 1)
+                        msg = msg + "salita";
+                    else
+                        msg = msg + "discesa";
+
                     console.log(msg);
                     this.events.push(new GpioEvent(msg));
 
