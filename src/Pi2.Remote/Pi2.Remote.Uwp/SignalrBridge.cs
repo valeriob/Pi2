@@ -15,14 +15,16 @@ namespace Pi2.Remote.Uwp
         HubConnection _hubConnection;
         string _device;
 
-        public SignalrBridge(GpioController gpio, string url, string device)
+        public SignalrBridge(GpioController gpio)
         {
             _setup = new SetupGpio(gpio);
+        }
+        public async Task Init(string url, string device)
+        {
+            _setup.Reset();
             _hubConnection = new HubConnection(url);
             _device = device;
-        }
-        public async Task Init()
-        {
+
             IHubProxy proxy = _hubConnection.CreateHubProxy("GpioHub");
 
             proxy.On<int>("ConfigureOutputPin", pinNumber =>
@@ -57,13 +59,13 @@ namespace Pi2.Remote.Uwp
                 _setup.Reset();
             });
 
-            _hubConnection.StateChanged += async (ev) => {
-                if (ev.NewState == ConnectionState.Disconnected)
-                {
-                    await _hubConnection.Start();
-                    await proxy.Invoke("RegisterDevice", _device);
-                }
-            };
+            //_hubConnection.StateChanged += async (ev) => {
+            //    if (ev.NewState == ConnectionState.Disconnected)
+            //    {
+            //        await _hubConnection.Start();
+            //        await proxy.Invoke("RegisterDevice", _device);
+            //    }
+            //};
 
 
             await _hubConnection.Start();

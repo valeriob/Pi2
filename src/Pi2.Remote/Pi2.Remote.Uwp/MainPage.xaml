@@ -8,6 +8,13 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" Text="{Binding Url}"> </TextBox>
+        <TextBox Grid.Row="1" Text="{Binding Device}"> </TextBox>
+        <Button Grid.Row="2" Click="Button_Click">Init</Button>
     </Grid>
 </Page>
