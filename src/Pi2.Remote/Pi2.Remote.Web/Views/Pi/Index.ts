@@ -27,9 +27,12 @@ module Pi2.Remote.Web.Pi {
 
         gpioHub: gpioHubProxy;
         device: string;
-        events: KnockoutObservableArray<GpioEvent>;
         eventsButtonA: KnockoutObservableArray<GpioEvent>;
         eventsButtonB: KnockoutObservableArray<GpioEvent>;
+
+        buttonASpeed: KnockoutObservable<number>;
+        buttonBSpeed: KnockoutObservable<number>;
+
         buttonA: number;
         buttonB: number;
         redLed: number;
@@ -43,9 +46,25 @@ module Pi2.Remote.Web.Pi {
             this.redLed = 18;
             this.yellowLed = 16;
 
-            this.events = ko.observableArray<GpioEvent>();
             this.eventsButtonA = ko.observableArray<GpioEvent>();
             this.eventsButtonB = ko.observableArray<GpioEvent>();
+            this.buttonASpeed = ko.observable<number>();
+            this.buttonBSpeed = ko.observable<number>();
+
+            var buttonAClicked = new Rx.Subject<number>();
+            var buttonBClicked = new Rx.Subject<number>();
+
+            buttonAClicked.bufferWithCount(2).select(s=> 1)
+                .bufferWithTime(500)
+                .subscribe(s=> {
+                    this.buttonASpeed(s.length / 0.5);
+                });
+
+            buttonBClicked.bufferWithCount(2).select(s=> 1)
+                .bufferWithTime(500)
+                .subscribe(s=> {
+                    this.buttonBSpeed(s.length / 0.5);
+                });
 
             $(() => {
 
@@ -59,22 +78,19 @@ module Pi2.Remote.Web.Pi {
                 });
 
                 this.gpioHub.client.notifyPinEdge = (device, pinNumber, edge) => {
-                    var msg = device + " : " + pinNumber + " ";
-                    if (edge === 1)
-                        msg = msg + "pressed";
-                    else
-                        msg = msg + "released";
 
+                    var msg = this.formatMessage(device, pinNumber, edge);
                     console.log(msg);
-                    this.events.push(new GpioEvent(msg));
 
                     if (pinNumber === this.buttonA) {
                         this.gpioHub.server.writeOutputPinValue(device, this.redLed, (edge + 1) % 2);
                         this.eventsButtonA.push(new GpioEvent(msg));
+                        buttonAClicked.onNext(edge);
                     }
                     if (pinNumber === this.buttonB) {
                         this.gpioHub.server.writeOutputPinValue(device, this.yellowLed, edge);
                         this.eventsButtonB.push(new GpioEvent(msg));
+                        buttonBClicked.onNext(edge);
                     }
                 }
 
@@ -84,6 +100,20 @@ module Pi2.Remote.Web.Pi {
 
             });
 
+        }
+
+        formatMessage(device: string, pinNumber : number, edge : number) : string {
+            var button = "Button A";
+
+            if (pinNumber === this.buttonB)
+                button = "Button B";
+
+            var msg = device + " : " + button + " ";
+            if (edge === 1)
+                msg = msg + "pressed";
+            else
+                msg = msg + "released";
+            return msg;
         }
 
         public turnLedRedOn() {
@@ -111,7 +141,6 @@ module Pi2.Remote.Web.Pi {
 
         public reset() {
             this.gpioHub.server.resetDevice(this.device);
-            this.events.removeAll();
             this.eventsButtonA.removeAll();
             this.eventsButtonB.removeAll();
         }

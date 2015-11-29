@@ -13,10 +13,13 @@
     <button data-bind="click:turnLedYellowOn">Yellow On</button>
     <button data-bind="click:turnLedYellowOff">Yellow Off</button>
 
-    @*<div data-bind="foreach:events">
-            <span style="font-weight:bold" data-bind="text:time"> </span>
-            <span data-bind="text:description"> </span>
-        </div>*@
+
+    <div class="row">
+        <div class="col-lg-3" data-bind="text:buttonASpeed">
+        </div>
+        <div class="col-lg-3" data-bind="text:buttonBSpeed">
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-lg-3" data-bind="foreach:eventsButtonA">
@@ -31,6 +34,8 @@
                 <span data-bind="text:description"> </span>
             </div>
         </div>
+
+
     </div>
 
 </div>
@@ -41,6 +46,7 @@
     <script src="@Url.Content("~/signalr/hubs")"></script>
 
     <script src="@Url.Content("~/scripts/knockout-3.4.0.js")"></script>
+    <script src="@Url.Content("~/scripts/rx.all.min.js")"></s></script>
 
     <script src="@Url.Content("~/Views/Pi/Index.js")"></script>
 

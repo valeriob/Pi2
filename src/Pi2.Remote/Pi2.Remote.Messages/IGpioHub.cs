@@ -21,7 +21,6 @@ namespace Pi2.Remote.Messages
         Task ResetDevice();
     }
 
-    //
 
     public enum GpioPinEdge
     {

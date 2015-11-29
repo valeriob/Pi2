@@ -10,11 +10,9 @@ namespace Pi.Remote
 {
     public class PinControl : IDisposable
     {
-        GpioPin pin;
-
         public int PinNumber { get; private set; }
-
         GpioController _gpio;
+        GpioPin _pin;
 
         public PinControl(GpioController gpio, int pinNumber)
         {
@@ -22,79 +20,44 @@ namespace Pi.Remote
             _gpio = gpio;
         }
 
-        void TurnPinHigh(GpioController gpio, int pinNumber)
-        {
-            pin = gpio.OpenPin(pinNumber);
-
-            var pinValue = GpioPinValue.High;
-            pin.Write(pinValue);
-            pin.SetDriveMode(GpioPinDriveMode.Output);
-        }
-
-        void TryTurnPinHigh(GpioController gpio, int pinNumber)
-        {
-            try
-            {
-                TurnPinHigh(gpio, pinNumber);
-            }
-            catch
-            {
-
-            }
-        }
 
         public void ConfigureForOutput(int pinNumber, GpioPinValue defaultValue)
         {
-            pin = _gpio.OpenPin(pinNumber);
-            pin.Write(defaultValue);
-            pin.SetDriveMode(GpioPinDriveMode.Output);
+            _pin = _gpio.OpenPin(pinNumber);
+            _pin.Write(defaultValue);
+            _pin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         public void ConfigureForInput(int pinNumber, Action<GpioPinEdge> callBack)
         {
-            pin = _gpio.OpenPin(pinNumber);
+            _pin = _gpio.OpenPin(pinNumber);
 
-            pin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
-            pin.ValueChanged += (sender, args) =>
+            _pin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
+            _pin.ValueChanged += (sender, args) =>
             {
                 callBack(args.Edge);
-
-                //var premuto = args.Edge == GpioPinEdge.FallingEdge;
-                //var rilasciato = args.Edge == GpioPinEdge.RisingEdge;
-                //var valore = sender.Read();
-
-                //if (premuto)
-                //{
-                //    output.Write(GpioPinValue.Low);
-                //}
-                //if (rilasciato)
-                //{
-                //    output.Write(GpioPinValue.High);
-                //}
 
                 Debug.WriteLine(args.Edge + "");
             };
 
-            pin.SetDriveMode(GpioPinDriveMode.Input);
+            _pin.SetDriveMode(GpioPinDriveMode.Input);
         }
 
 
         internal void WriteOutputPinValue(GpioPinValue pinValue)
         {
-            pin.Write(pinValue);
+            _pin.Write(pinValue);
         }
 
         internal GpioPinValue ReadPinValue()
         {
-            return pin.Read();
+            return _pin.Read();
         }
 
         public void Dispose()
         {
-            if (pin != null)
-                pin.Dispose();
-            if (pin != null)
-                pin.Dispose();
+            if (_pin != null)
+                _pin.Dispose();
         }
     }
 }

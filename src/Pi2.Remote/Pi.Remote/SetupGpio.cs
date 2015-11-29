@@ -9,23 +9,23 @@ namespace Pi.Remote
 {
     public class SetupGpio : IDisposable
     {
-        List<PinControl> _controls;
         GpioController _gpio;
+        List<PinControl> _controls;
 
         public SetupGpio(GpioController gpio)
         {
-            _controls = new List<PinControl>();
             _gpio = gpio;
+            _controls = new List<PinControl>();
         }
 
-        public void ConfiguraOutputPin(int pinNumber)
+        public void ConfigureOutputPin(int pinNumber)
         {
             var control = new PinControl(_gpio, pinNumber);
             control.ConfigureForOutput(pinNumber, GpioPinValue.High);
             _controls.Add(control);
         }
 
-        public void ConfiguraInputPin(int pinNumber, Action<GpioPinEdge> callback)
+        public void ConfigureInputPin(int pinNumber, Action<GpioPinEdge> callback)
         {
             var control = new PinControl(_gpio, pinNumber);
             control.ConfigureForInput(pinNumber, callback);
